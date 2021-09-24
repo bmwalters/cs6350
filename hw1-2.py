@@ -3,9 +3,9 @@
 import os
 import os.path
 
-from .dataset.parse import parse_dataset
-from .DecisionTree.decision_tree import evaluate, TreeNode, LeafNode
-from .DecisionTree.id3 import gain, entropy, ID3, gini_index, majority_error
+from dataset.parse import parse_dataset
+from DecisionTree.decision_tree import evaluate, TreeNode, LeafNode
+from DecisionTree.id3 import gain, entropy, ID3, gini_index, majority_error
 
 car_dataset = parse_dataset("./data/car/")
 

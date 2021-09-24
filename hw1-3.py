@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-
 import os
 import os.path
 import csv
@@ -13,6 +12,8 @@ from DecisionTree.id3 import gain, entropy, ID3, gini_index, majority_error
 # Config
 
 part_b = True
+
+overwrite = False
 
 ##############
 # Load Dataset
@@ -112,8 +113,6 @@ dataset = Dataset(train, test, attributes, label_attribute)
 
 ########################
 # Training and Inference
-
-overwrite = True
 
 trees = {}
 
