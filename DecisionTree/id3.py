@@ -3,7 +3,7 @@
 from typing import Set, Callable
 from math import log2
 
-from ..dataset.dataset import Examples, Attribute, AttributeName, partition, most_common_label_value
+from dataset.dataset import Examples, Attribute, AttributeName, partition, most_common_label_value
 from .decision_tree import Node, TreeNode, LeafNode
 
 ##################

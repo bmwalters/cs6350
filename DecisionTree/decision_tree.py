@@ -3,7 +3,7 @@
 from typing import Dict, Union
 from dataclasses import dataclass, field
 
-from ..dataset.dataset import Example, Examples, Attribute, AttributeName, AttributeValue
+from dataset.dataset import Example, Examples, Attribute, AttributeName, AttributeValue
 
 @dataclass
 class TreeNode:
