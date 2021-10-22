@@ -25,10 +25,3 @@ def predict(tree: Node, example: Example) -> AttributeValue:
     else:
         attribute_value = example[tree.attribute_name]
         return predict(tree.children[attribute_value], example)
-
-def evaluate(tree: Node, examples: Examples, label: Attribute) -> float:
-    correct = 0
-    for example in examples:
-        if predict(tree, example) == example[label.name]:
-            correct += 1
-    return correct / len(examples)
