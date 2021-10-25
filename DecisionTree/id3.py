@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 
-from typing import Set, Callable, Tuple, Dict
+from typing import Callable, Dict, Optional, Set
 from math import log2
+from itertools import islice
 from collections import defaultdict
 
 from dataset.dataset import Examples, Attribute, AttributeName, AttributeValue, Weights, partition, most_common_label_value
@@ -20,13 +21,13 @@ def attribute_gains(entropy_func: EntropyFunc, S: Examples, weights: Weights, at
         for v in A.values:
             Sv, Wv = partition(S, weights, A.name, v)
             if len(Sv) > 0:
-                weight = sum(Wv) / sum(weights)
+                weight = sum(islice(Wv, len(Sv))) / sum(islice(weights, len(S)))
                 total_entropy += weight * entropy_func(Sv, Wv, label.name)
         return initial_entropy - total_entropy
 
     return dict(map(lambda A: (A, attribute_gain(A)), attributes))
 
-def ID3(entropy_func: EntropyFunc, max_depth: int, S: Examples, weights: Weights, attributes: Set[Attribute], label: Attribute) -> Node:
+def ID3(entropy_func: EntropyFunc, max_depth: Optional[int], S: Examples, weights: Weights, attributes: Set[Attribute], label: Attribute) -> Node:
     def _ID3(S: Examples, weights: Weights, attributes: Set[Attribute], depth: int = 0) -> Node:
         assert len(S) > 0
         assert len(S) == len(weights) if isinstance(weights, list) else True
@@ -35,7 +36,7 @@ def ID3(entropy_func: EntropyFunc, max_depth: int, S: Examples, weights: Weights
         if len(label_values) < 2:
             return LeafNode(label_values.pop())
 
-        if len(attributes) == 0 or depth >= max_depth:
+        if len(attributes) == 0 or (max_depth is not None and depth >= max_depth):
             return LeafNode(most_common_label_value(S, weights, label.name))
 
         gains = attribute_gains(entropy_func, S, weights, attributes, label)

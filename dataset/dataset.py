@@ -15,6 +15,8 @@ class Attribute:
     name: AttributeName
     values: Set[AttributeValue] = field(compare=False)
 
+Attributes = Set[Attribute]
+
 Example = Dict[AttributeName, AttributeValue]
 Examples = List[Example]
 Weights = Iterable[float]
@@ -23,7 +25,7 @@ Weights = Iterable[float]
 class Dataset:
     train: Examples
     test: Examples
-    attributes: Set[Attribute]
+    attributes: Attributes
     label: Attribute
 
 ##################

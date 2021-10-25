@@ -2,11 +2,12 @@
 import os
 import os.path
 import csv
+from itertools import repeat
 from statistics import median
 
-from dataset.dataset import Attribute, Dataset
-from DecisionTree.decision_tree import evaluate, TreeNode, LeafNode
-from DecisionTree.id3 import gain, entropy, ID3, gini_index, majority_error
+from dataset.dataset import Attribute, Dataset, evaluate
+from DecisionTree.decision_tree import TreeNode, LeafNode, predict as predict_decisiontree
+from DecisionTree.id3 import ID3, entropy, gini_index, majority_error
 
 ########
 # Config
@@ -126,8 +127,7 @@ for (entropy_func, func_name) in [(entropy, "entropy"), (majority_error, "me"), 
                 trees[filename] = eval(f.read())
             continue
 
-        best_attribute = gain(entropy_func)
-        tree = ID3(best_attribute, max_depth, dataset.train, dataset.attributes, dataset.label)
+        tree = ID3(entropy_func, max_depth, dataset.train, repeat(1), dataset.attributes, dataset.label)
 
         os.makedirs(os.path.dirname(filename), exist_ok=True)
         with open(filename, "w") as f:
@@ -138,6 +138,7 @@ for (entropy_func, func_name) in [(entropy, "entropy"), (majority_error, "me"), 
 
 all_examples = dataset.train + dataset.test
 for name, tree in trees.items():
-    train_error = 1 - evaluate(tree, dataset.train, dataset.label)
-    test_error = 1 - evaluate(tree, dataset.test, dataset.label)
+    predictor = lambda example: predict_decisiontree(tree, example)
+    train_error = 1 - evaluate(predictor, dataset.train, repeat(1), dataset.label)
+    test_error = 1 - evaluate(predictor, dataset.test, repeat(1), dataset.label)
     print(f"{name} train error: {train_error:.2f} test error: {test_error:.2f}")
