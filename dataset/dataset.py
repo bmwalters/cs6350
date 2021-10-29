@@ -24,7 +24,9 @@ Weights = Iterable[float]
 @dataclass(frozen = True)
 class Dataset:
     train: Examples
+    train_weights: Weights
     test: Examples
+    test_weights: Weights
     attributes: Attributes
     label: Attribute
 
