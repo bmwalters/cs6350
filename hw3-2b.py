@@ -4,7 +4,7 @@ import random
 
 from dataset.continuous import Example, evaluate
 from dataset.bank_note import attributes as bank_note_attributes_ordered, load as load_bank_note_dataset
-from voted_perceptron import perceptron, predict as predict_voted_perceptron
+from Perceptron.voted_perceptron import perceptron, predict as predict_voted_perceptron
 
 def main():
     random.seed(4242)

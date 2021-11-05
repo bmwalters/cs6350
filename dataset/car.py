@@ -5,7 +5,7 @@ import os.path
 
 from .dataset import Dataset, Attribute
 
-def parse_dataset(path: str) -> Dataset:
+def load(path: str) -> Dataset:
     def parse_attribute_line(line: str) -> Attribute:
         [name, values] = map(lambda s: s.strip().rstrip("."), line.split(":"))
         return Attribute(name, set(values.split(", ")))

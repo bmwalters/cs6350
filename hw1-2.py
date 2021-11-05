@@ -1,13 +1,15 @@
 #!/usr/bin/env python
 
+from itertools import repeat
 import os
 import os.path
 
-from dataset.parse import parse_dataset
-from DecisionTree.decision_tree import evaluate, TreeNode, LeafNode
-from DecisionTree.id3 import gain, entropy, ID3, gini_index, majority_error
+from dataset.dataset import evaluate
+from dataset.car import load as load_car_dataset
+from DecisionTree.decision_tree import TreeNode, LeafNode, predict
+from DecisionTree.id3 import entropy, ID3, gini_index, majority_error
 
-car_dataset = parse_dataset("./data/car/")
+car_dataset = load_car_dataset("./data/car/")
 
 overwrite = False
 
@@ -22,8 +24,7 @@ for (entropy_func, func_name) in [(entropy, "entropy"), (majority_error, "me"), 
                 trees[filename] = eval(f.read())
             continue
 
-        best_attribute = gain(entropy_func)
-        tree = ID3(best_attribute, max_depth, car_dataset.train, car_dataset.attributes, car_dataset.label)
+        tree = ID3(entropy_func, max_depth, car_dataset.train, repeat(1), car_dataset.attributes, car_dataset.label)
 
         os.makedirs(os.path.dirname(filename), exist_ok=True)
         with open(filename, "w") as f:
@@ -34,6 +35,7 @@ for (entropy_func, func_name) in [(entropy, "entropy"), (majority_error, "me"), 
 
 all_examples = car_dataset.train + car_dataset.test
 for name, tree in trees.items():
-    train_error = 1 - evaluate(tree, car_dataset.train, car_dataset.label)
-    test_error = 1 - evaluate(tree, car_dataset.test, car_dataset.label)
+    predictor = lambda example: predict(tree, example)
+    train_error = 1 - evaluate(predictor, car_dataset.train, repeat(1), car_dataset.label)
+    test_error = 1 - evaluate(predictor, car_dataset.test, repeat(1), car_dataset.label)
     print(f"{name} train error: {train_error:.2f} test error: {test_error:.2f}")

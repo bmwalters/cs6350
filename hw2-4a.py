@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from dataset.concrete import load as load_concrete_dataset
-from gradient_descent import bgd, compute_loss_gradient
+from LinearRegression.gradient_descent import bgd, compute_loss_gradient
 
 def main():
     dataset = load_concrete_dataset("./data/concrete")

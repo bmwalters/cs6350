@@ -2,7 +2,7 @@
 
 import unittest
 
-from gradient_descent import compute_loss_gradient
+from LinearRegression.gradient_descent import compute_loss_gradient
 
 class TestGradientDescent(unittest.TestCase):
     def test_compute_loss_gradient(self):

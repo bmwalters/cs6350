@@ -1,17 +1,13 @@
 #!/usr/bin/env python
 
-import os
-import os.path
-import csv
 from itertools import repeat
-from statistics import median
 from typing import List, Tuple
 
 from dataset.bank import load as load_bank_dataset
 from dataset.dataset import Attribute, Dataset, Examples, Weights, evaluate
 from DecisionTree.decision_tree import Node, TreeNode, LeafNode, predict as predict_decisiontree
 from DecisionTree.id3 import ID3, entropy
-from adaboost import adaboost_step, predict as predict_adaboost
+from EnsembleLearning.adaboost import adaboost_step, predict as predict_adaboost
 
 dataset = load_bank_dataset("./data/bank")
 

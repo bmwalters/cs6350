@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from dataset.concrete import load as load_concrete_dataset
-from gradient_descent import sgd, compute_loss_gradient
+from LinearRegression.gradient_descent import sgd, compute_loss_gradient
 
 def main():
     dataset = load_concrete_dataset("./data/concrete")
@@ -30,6 +30,7 @@ def main():
 
         test_cost, _, _ = compute_loss_gradient(w, bias, dataset.test, dataset.label)
         print("test cost", test_cost)
+        r /= 2 # TODO
 
 if __name__ == "__main__":
     main()

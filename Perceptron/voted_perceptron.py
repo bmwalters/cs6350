@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 
 from random import shuffle
-from typing import Dict, Iterable, List, Tuple
+from typing import Iterable, List, Tuple
 
 from dataset.continuous import AttributeName, AttributeValue, Attributes, Example
-from perceptron import Weights, predict as predict_perceptron
+from .perceptron import Weights, predict as predict_perceptron
 
 def perceptron_step(
         r: float,
