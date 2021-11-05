@@ -13,13 +13,14 @@ def perceptron_step(
         weights: Weights,
         bias: float,
         example: Example
-) -> Tuple[Weights, float]:
-    if predict(weights, bias, example) != example[label]:
+) -> Tuple[bool, Weights, float]:
+    correct = predict(weights, bias, example) == example[label]
+    if not correct:
         change = 1.0 if example[label] == 1 else -1.0
         for attribute in weights:
             weights[attribute] += r * change * example[attribute]
         bias += r * change * 1.0
-    return weights, bias
+    return correct, weights, bias
 
 def perceptron_epoch(
         r: float,
@@ -27,10 +28,12 @@ def perceptron_epoch(
         examples: Iterable[Example],
         weights: Weights,
         bias: float
-) -> Tuple[Weights, float]:
+) -> Tuple[int, Weights, float]:
+    count_correct = 0
     for example in examples:
-        weights, bias = perceptron_step(r, label, weights, bias, example)
-    return weights, bias
+        correct, weights, bias = perceptron_step(r, label, weights, bias, example)
+        count_correct += 1 if correct else 0
+    return count_correct, weights, bias
 
 def perceptron(
         epochs: int,
@@ -43,7 +46,9 @@ def perceptron(
     bias = 0.0
     for _ in range(epochs):
         shuffle(examples)
-        weights, bias = perceptron_epoch(r, label, examples, weights, bias)
+        count_correct, weights, bias = perceptron_epoch(r, label, examples, weights, bias)
+        if count_correct == len(examples):
+            break
     return weights, bias
 
 def predict(weights: Weights, bias: float, example: Example) -> AttributeValue:
