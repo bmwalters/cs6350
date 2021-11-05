@@ -4,9 +4,7 @@ from random import shuffle
 from typing import Dict, Iterable, List, Tuple
 
 from dataset.continuous import AttributeName, AttributeValue, Attributes, Example
-from perceptron import predict as predict_perceptron
-
-Weights = Dict[AttributeName, float]
+from perceptron import Weights, predict as predict_perceptron
 
 def perceptron_step(
         r: float,
