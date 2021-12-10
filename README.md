@@ -120,17 +120,34 @@ while r > (1 / 1024):
 ## Perceptron
 
 ``` python
-import random
-
 from dataset.continuous import evaluate
 from dataset.bank_note import load as load_bank_note_dataset
 from Perceptron.perceptron import perceptron, predict
 
 dataset = load_bank_note_dataset("./data/bank-note")
 
-random.seed(4242)
 weights, bias = perceptron(10, 1, dataset.label, dataset.attributes, dataset.train)
 
 predictor = lambda example: predict(weights, bias, example)
+test_error = 1 - evaluate(predictor, dataset.label, dataset.test)
+```
+
+## SVM
+
+``` python
+from dataset.continuous import evaluate
+from dataset.bank_note import attributes, load as load_bank_note_dataset
+from SVM.svm import predict, svm
+
+dataset = load_bank_note_dataset("./data/bank-note")
+
+def gamma_schedule(t):
+    gamma0 = 0.1
+    alpha = 0.01
+    return gamma0 / (1 + (gamma0 / alpha) * t)
+
+weights, bias = svm(100, 100/873, gamma_schedule, dataset.attributes, dataset.label, dataset.train)
+
+predictor = lambda example: 1 if predict(weights, bias, example) >= 0 else 0
 test_error = 1 - evaluate(predictor, dataset.label, dataset.test)
 ```
