@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 
 from math import e
-from random import shuffle, gauss
+from random import shuffle
 from typing import Callable, List
 
-from dataset.continuous import AttributeName, Examples
+from dataset.continuous import AttributeName, Example, Examples
 
 sigmoid = lambda x: 1.0 / (1.0 + e ** (-x))
 dot = lambda a, b: sum(map(lambda ab: ab[0] * ab[1], zip(a, b)))
@@ -29,8 +29,9 @@ def backpropagation(
 
     return [[], dw1, dw2, dw3]
 
-def predict(w: List[List[List[float]]], x: List[float]):
+def predict(w: List[List[List[float]]], example: Example, attributes: List[AttributeName]) -> float:
     # forward pass
+    x = [1.0] + list(map(lambda a: example[a], attributes))
     z1 = [1] + list(map(lambda ws: sigmoid(dot(x, ws)), w[1][1:]))
     z2 = [1] + list(map(lambda ws: sigmoid(dot(z1, ws)), w[2][1:]))
     y = dot(z2, w[3][1])
@@ -39,9 +40,8 @@ def predict(w: List[List[List[float]]], x: List[float]):
 def cost(examples: Examples, attributes: List[AttributeName], label: AttributeName, w: List[List[List[float]]]) -> float:
     avg_cost = 0.0
     for example in examples:
-        x = [1.0] + list(map(lambda a: example[a], attributes))
         ystar = -1 if example[label] == 0 else 1
-        y = predict(w, x)
+        y = predict(w, example, attributes)
         L = ((y - ystar) ** 2)/2
         avg_cost += L / len(examples)
     return avg_cost
@@ -49,7 +49,7 @@ def cost(examples: Examples, attributes: List[AttributeName], label: AttributeNa
 def train_sgd(
         examples: Examples, attributes: List[AttributeName], label: AttributeName,
         width: int, T: int, r0: float, d: float, initial_weight: Callable[[], float]
-):
+) -> List[List[List[float]]]:
     w = [
         [],
         [[]] + [[initial_weight() for _ in attributes] for _ in range(width - 1)],
