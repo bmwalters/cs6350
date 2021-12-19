@@ -57,7 +57,7 @@ def load_income_dataset(path: str) -> Tuple[List[List[int]], List[int], List[Lis
     categories = list(map(lambda k: list(sorted(raw_attributes[k])), sorted_attributes))
     missing = 4242
     enc = OrdinalEncoder(categories=categories, handle_unknown="use_encoded_value", unknown_value=missing)
-    enc._fit(train + test, handle_unknown=enc.handle_unknown)
+    enc.fit(train + test)
     train = enc.transform(train)
     test = enc.transform(test)
 
@@ -73,6 +73,10 @@ def main():
 
     clf = RandomForestClassifier()
     clf = clf.fit(trainX, Y)
+
+    is_right = lambda ab: (1 if ab[0] >= 0.5 else 0) == ab[1]
+    train_error = 1.0 - (len(list(filter(is_right, zip(clf.predict(trainX), Y)))) / len(Y))
+    print(f"train error: {train_error:.2f}")
 
     with open(f"generated/sklearn-random-forest-imputed.csv", "w") as f:
          writer = csv.writer(f)

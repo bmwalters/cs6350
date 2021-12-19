@@ -10,7 +10,7 @@ from DecisionTree.id3 import ID3, entropy
 def main():
     dataset = load_income_dataset("./data/income")
 
-    for max_depth in range(5, 13): # I have observed depth 12 = fully expanded.
+    for max_depth in [7, 13]: # I have observed depth 12 = fully expanded.
         tree = ID3(entropy, max_depth, dataset.train, dataset.train_weights, dataset.attributes, dataset.label)
 
         predictor = lambda example: predict_decisiontree(tree, example)

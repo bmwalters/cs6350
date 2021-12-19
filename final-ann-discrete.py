@@ -2,7 +2,7 @@
 
 import csv
 import os.path
-from random import gauss
+import random
 from typing import Callable
 
 from dataset.continuous import Example as ContinuousExample, evaluate
@@ -11,23 +11,19 @@ from dataset.income import load as load_income_dataset
 from NeuralNetwork.backpropagation import train_sgd, predict
 
 def main():
+    random.seed(4242)
     dataset = load_income_dataset("./data/income")
 
     # embed discrete values in examples
     def map_example(example: DiscreteExample) -> ContinuousExample:
-        try:
-            new_example = {}
-            for attribute in dataset.attributes:
-                for attribute_value in attribute.values:
-                    new_example[f"has_{attribute.name}_{attribute_value}"] = \
-                        1.0 if example[attribute.name] == attribute_value else -1.0
-            if dataset.label.name in example:
-                new_example[dataset.label.name] = 1 if example[dataset.label.name] == "1" else 0
-            return new_example
-        except Exception as e:
-            print(e)
-            print(example)
-            exit(0)
+        new_example = {}
+        for attribute in dataset.attributes:
+            for attribute_value in attribute.values:
+                new_example[f"has_{attribute.name}_{attribute_value}"] = \
+                    1.0 if example[attribute.name] == attribute_value else -1.0
+        if dataset.label.name in example:
+            new_example[dataset.label.name] = 1 if example[dataset.label.name] == "1" else 0
+        return new_example
     train_continuous = list(map(map_example, dataset.train))
     test_continuous = list(map(lambda e: map_example(e[0]), dataset.test))
 
@@ -36,7 +32,7 @@ def main():
 
     # train net
     T = 5
-    normal = lambda: gauss(mu=0, sigma=1)
+    normal = lambda: random.gauss(mu=0, sigma=1)
 
     net_w = []
     net_path = f"generated/final-ann-discrete-{T}"
